@@ -1,0 +1,90 @@
+---
+title: "Carte interactive des données mensuelles ONDE - Normandie"
+author: "OFB DR Normandie - Service régional Connaissance"
+date: "MAJ: `r format(Sys.time(), '%d %B %Y - %H:%M')`"
+output: 
+  html_document :
+    highlight: pygments #default, tango, pygments, kate, monochrome, espresso, zenburn, haddock, and textmate 
+    theme: flatly #“default”, “cerulean”, “journal”, “flatly”, “readable”, “spacelab”, “united”, “cosmo”, “lumen”, “paper”, “sandstone”, “simplex”, “yeti”
+    css: "../assets/theme_html2.css"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo      = FALSE,
+                      warning   = FALSE,
+                      message   = FALSE,
+                      fig.align = "center",
+                      fig.retina = 3,
+                      dev = 'png',
+                      cache = F,
+                      dev = "ragg_png"
+                      )
+```
+
+```{r, echo = FALSE}
+htmltools::img(src = knitr::image_uri('logo_OFB_v2.png'),
+               alt = 'logo',
+               style = 'position:absolute; top:0; right:0; padding:10px; width:200px;')
+```
+
+## Préambule
+
+Les données sont issues de onde.eaufrance.fr
+
+Les données ci-dessous ont été mis à jour pour la dernière fois le :
+
+Les dernières observations ont été réalisées sur le mois de XX pour les usuelles et XX pour les complémentaires.
+
+# {.tabset .tabset-pills}
+
+## Situation mensuelle campagne usuelle {.tabset}
+
+Les cartes se lisent de la manière suivante :
+
+* La couleur des points correspond à la situation du dernier mois de campagnes (observations usuelles).
+* Les tailles des points sont proportionnels à la fréquence des assecs dans les observations.
+* En cliquant sur une station, l'historique des états sous forme graphique peut être affiché.
+* Les couches à afficher peuvent être sélectionnées (i.e. fonds de cartes, départements, assecs).
+
+Deux onglets sont distingués correspondant aux deux référentiels d'écoulement : 
+
+- à **3 modalités** : <span style="color: #0570b0;">**écoulement visible**</span> ; <span style="color: #feb24c;">**écoulement non visible**</span> et <span style="color: #e31a1c;">**assec**</span>
+
+- à **4 modalités** : <span style="color: #0570b0;">**écoulement visible acceptable**</span> ; <span style="color: #bdd7e7;">**écoulement visible faible**</span> ; <span style="color: #feb24c;">**écoulement non visible**</span> et <span style="color: #e31a1c;">**assec**</span>.
+
+Les absences de données (observations impossibles ou observations non renseignées) peuvent également figurer (*NA*). 
+
+<br>
+
+### Carte - 3 modalités
+
+### Carte - 4 modalités
+
+## Campagnes complémentaires {.tabset}
+
+## Bilan {.tabset}
+
+## Méthodologie
+
+**Les données**
+
+Les données ONDE sont produites par les agents de l'Office français de la biodiversité à partir d'observations de terrain. Elles sont [mises à disposition](https://onde.eaufrance.fr/content/t%C3%A9l%C3%A9charger-les-donn%C3%A9es-des-campagnes-par-ann%C3%A9e) sous forme de fichiers annuels au format Excel. Le fichier de l'année en cours est mis à jour "au fil de l'eau".
+
+Les campagnes de collecte dites "usuelles" sont réalisées sur chaque département au niveau national, au pas mensuel de mai à septembre (observations systématiques à la date du 25 +/- 2 jours du mois). 
+
+En outre, lorsque les conditions hydrologiques locales sont jugées sensibles (i.e, sécheresse), des observations dites "complémentaires" peuvent être réalisées sur un sous-ensemble de stations (ou la totalité) dans les départements. 
+
+**La carte**
+
+Les fonds de carte proposés sont appelés depuis *leaflet*.
+
+Les graphiques pour chaque station représentent :
+
+* De mai à septembre, les campagnes "usuelles".
+* D'octobre à avril, les campagnes "complémentaires".
+
+**Les outils employés**
+
+La lecture des données, leur mise en forme et la production de la carte sont effectués au moyen du logiciel *R* et de plusieurs *packages* `rmarkdown`, `ondetools`, `tidyverse`, `leaflet` et `mapview`.
+
+
