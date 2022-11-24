@@ -40,6 +40,10 @@ propluvia <-
   dplyr::select(-Niveau)
 
 load(file = "../data/raw_data/departement_shape.RData")
+
+stations_onde_geo_map1 <-
+  stations_onde_geo_usuelles %>% 
+  left_join(onde_dernieres_campagnes_usuelles %>% select(code_station,Couleur))
 ```
 
 ## Préambule

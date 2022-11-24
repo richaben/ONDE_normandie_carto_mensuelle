@@ -257,4 +257,4 @@ graphiques_int_3mod <-
 names(graphiques_int_3mod) <- stations_onde_geo_usuelles$code_station
 
 # Sauvegarde des objets pour page Rmd
-save(stations_onde_geo_usuelles, graphiques_int_3mod, onde_ts_mois_last,file = "data/processed_data/map_data.RData")
+save(stations_onde_geo_usuelles, graphiques_int_3mod, onde_dernieres_campagnes_usuelles,file = "data/processed_data/map_data.RData")
