@@ -27,7 +27,8 @@ jobs:
         
       - name: Install dependencies
         run: |
-          install.packages(c("sf", "hubeau"))  
+          install.packages("sf") 
+          install.packages("hubeau")
         
       - name: Execute Scripts
         run: |
