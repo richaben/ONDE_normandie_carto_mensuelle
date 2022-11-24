@@ -203,7 +203,7 @@ stations_onde_geo_comp <-
 
 # génération des graphs en serie
 
-produire_graph_pour_une_station_int <- 
+produire_graph_pour_une_station <- 
   function(code_station2, onde_df, couleurs){
     
     prov <- onde_df %>%
@@ -220,11 +220,11 @@ produire_graph_pour_une_station_int <-
       ggplot(data = prov) +
       aes(x = Annee,
           y = Mois %>% as.numeric) +
-      ggiraph::geom_point_interactive(
-        aes(tooltip = label_p,
-            fill = stringr::str_wrap(lib_ecoul3mod, 12),
-            shape = libelle_type_campagne,
-            size = libelle_type_campagne,
+      geom_point(
+        aes(
+          fill = stringr::str_wrap(lib_ecoul3mod, 12),
+          shape = libelle_type_campagne,
+          size = libelle_type_campagne,
         ),col='black') +
       coord_flip() +
       scale_fill_manual(values = couleurs, name = 'Modalités') +
@@ -237,11 +237,48 @@ produire_graph_pour_une_station_int <-
       theme_bw() +
       guides(fill = guide_legend(override.aes=list(shape = 22, size = 5)))
     
-    
-    graph1 <- ggiraph::girafe(ggobj = graph1)
-    graph1 <- ggiraph::girafe_options(graph1, ggiraph::opts_toolbar(pngname = nom_station_graph))
     graph1
   }
+
+# produire_graph_pour_une_station_int <- 
+#   function(code_station2, onde_df, couleurs){
+#     
+#     prov <- onde_df %>%
+#       #filter(libelle_type_campagne == 'usuelle') %>%
+#       filter(code_station == code_station2) %>% 
+#       mutate(label_p = paste0(libelle_type_campagne,'\n',lib_ecoul3mod,'\n',date_campagne),
+#              label_sta = paste0(libelle_station,' (',code_station,')'),
+#              label_png = paste0("ONDE_dpt",code_departement,"_",label_sta))
+#     
+#     nom_station <- unique(prov$label_sta)
+#     nom_station_graph <- unique(prov$label_png)
+#     
+#     graph1 <-
+#       ggplot(data = prov) +
+#       aes(x = Annee,
+#           y = Mois %>% as.numeric) +
+#       ggiraph::geom_point_interactive(
+#         aes(tooltip = label_p,
+#             fill = stringr::str_wrap(lib_ecoul3mod, 12),
+#             shape = libelle_type_campagne,
+#             size = libelle_type_campagne,
+#         ),col='black') +
+#       coord_flip() +
+#       scale_fill_manual(values = couleurs, name = 'Modalités') +
+#       scale_shape_manual(values = c(21,22),name = 'Type campagne') +
+#       scale_size_manual(values = c(5,10),name = 'Type campagne') +
+#       scale_y_continuous(breaks = 1:12, labels = 1:12) +
+#       scale_x_continuous(breaks = min(prov$Annee, na.rm = T):max(prov$Annee, na.rm = T),
+#                          labels = min(prov$Annee, na.rm = T):max(prov$Annee, na.rm = T)) +
+#       labs(x = "", y = "Mois", title = nom_station) +
+#       theme_bw() +
+#       guides(fill = guide_legend(override.aes=list(shape = 22, size = 5)))
+#     
+#     
+#     graph1 <- ggiraph::girafe(ggobj = graph1)
+#     graph1 <- ggiraph::girafe_options(graph1, ggiraph::opts_toolbar(pngname = nom_station_graph))
+#     graph1
+#   }
 
 # produire_graph_pour_une_station_int(onde_df = onde_periode,
 #                                     code_station2 = stations_onde_geo_usuelles$code_station[3],
@@ -250,11 +287,11 @@ produire_graph_pour_une_station_int <-
 
 graphiques_int_3mod <- 
   purrr::map(.x = stations_onde_geo_usuelles$code_station, 
-    .f = produire_graph_pour_une_station_int, 
+    .f = produire_graph_pour_une_station, 
     onde_df = onde_periode, 
     couleurs = mes_couleurs_3mod)
 
 names(graphiques_int_3mod) <- stations_onde_geo_usuelles$code_station
 
 # Sauvegarde des objets pour page Rmd
-save(stations_onde_geo_usuelles, graphiques_int_3mod, onde_dernieres_campagnes_usuelles,file = "data/processed_data/map_data.RData")
+save(stations_onde_geo_usuelles, graphiques_int_3mod, onde_dernieres_campagnes_usuelles,file = "data/processed_data/map_data3mod.RData")
