@@ -27,8 +27,8 @@ jobs:
         
       - name: Install dependencies
         run: |
-          install.packages("sf") 
-          install.packages("hubeau")
+          install.packages(c("hubeau", "leaflet", "leaflet.extras"))
+        shell: Rscript {0}
         
       - name: Execute Scripts
         run: |
