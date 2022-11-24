@@ -22,6 +22,8 @@ jobs:
             any::tidyverse
             any::rmarkdown
             any::devtools
+            any::hubeau
+            any::sf
             
       - name: Installation packages in dev
         run: Rscript -e 'devtools::install_github("richaben/ondetools")'
