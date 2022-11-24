@@ -248,10 +248,11 @@ produire_graph_pour_une_station_int <-
 #                                     couleurs = mes_couleurs_3mod)
 
 
-graphiques_int_3mod <- ondetools::produire_graph_pour_toutes_les_stations(stations = stations_onde_geo_usuelles$code_station,
-                                                                          fonction_graphique = produire_graph_pour_une_station_int,
-                                                                          onde_df_ts_mois = onde_periode,
-                                                                          couleurs = mes_couleurs_3mod)
+graphiques_int_3mod <- 
+  purrr::map(.x = stations_onde_geo_usuelles$code_station, 
+    .f = produire_graph_pour_une_station_int, 
+    onde_df = onde_periode, 
+    couleurs = mes_couleurs_3mod)
 
 names(graphiques_int_3mod) <- stations_onde_geo_usuelles$code_station
 
