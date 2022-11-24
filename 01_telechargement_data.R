@@ -74,4 +74,4 @@ onde_df <-
 
 
 ### Ecriture/Sauvegarde des données ----
-write_csv(onde_df, paste0('onde_data/','onde_',date_jour_heure,'.csv'))
+write_csv(onde_df, paste0('data/onde_data/','onde_',date_jour_heure,'.csv'))
