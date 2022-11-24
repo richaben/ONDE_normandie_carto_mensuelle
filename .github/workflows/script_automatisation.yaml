@@ -27,12 +27,14 @@ jobs:
         
       - name: Install dependencies
         run: |
-          install.packages(c("hubeau", "leaflet", "leaflet.extras"))
+          install.packages(c("hubeau", "leaflet", "leaflet.extras","ggiraph"))
         shell: Rscript {0}
         
       - name: Execute Scripts
         run: |
           Rscript "01_telechargement_data.R"
+          Rscript "02_generer_rapport_html.R"
+          
       - name: Commit Results and Deploy Pages 
         run: |
           git config --local user.email "actions@github.com"
