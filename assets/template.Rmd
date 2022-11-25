@@ -7,6 +7,8 @@ output:
     highlight: pygments #default, tango, pygments, kate, monochrome, espresso, zenburn, haddock, and textmate 
     theme: flatly #“default”, “cerulean”, “journal”, “flatly”, “readable”, “spacelab”, “united”, “cosmo”, “lumen”, “paper”, “sandstone”, “simplex”, “yeti”
     css: "../assets/theme_html2.css"
+# Language
+lang: fr-FR
 ---
 
 ```{r setup, include=FALSE}
@@ -19,12 +21,6 @@ knitr::opts_chunk$set(echo      = FALSE,
                       cache = F,
                       dev = "ragg_png"
                       )
-
-if (Sys.info()["sysname"] == "Windows") {
-  Sys.setlocale("LC_TIME", "french")
-} else  {
-  Sys.setlocale("LC_TIME", "fr_FR");
-}
 ```
 
 ```{r, echo = FALSE}
