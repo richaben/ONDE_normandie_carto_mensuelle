@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron:  "30 0 * * *"
+    - cron:  "*/60 * * * *"
   workflow_dispatch:
 
 name: Script_R_ONDE_Normandie
