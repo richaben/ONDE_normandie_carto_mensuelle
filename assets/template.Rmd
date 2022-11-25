@@ -47,16 +47,19 @@ stations_onde_geo_map1 <-
   left_join(onde_dernieres_campagnes_usuelles %>% select(code_station, Couleur, date_campagne)) %>% 
   mutate(label_point = paste0(libelle_station,'<br />','dernière obs.:',date_campagne))
 
-date_derniere_campagne <- lubridate::ym(unique(onde_dernieres_campagnes_usuelles$Mois_campagne))
+date_derniere_campagne_usuelle <- 
+  unique(onde_dernieres_campagnes_usuelles$Mois_campagne) %>% 
+  format("%B %Y") 
 ```
 
 ## Préambule
 
-Les données sont issues de onde.eaufrance.fr
+⚠️ Cette page est générée automatiquement, et son contenu a été mis à jour pour la dernière fois le **`r format(Sys.time(), '%d %B %Y à %H:%M')`**.
 
-Les données ci-dessous ont été mis à jour pour la dernière fois le :
+⚠️ Les données présentées ici concernent les observations réalisées :
 
-Les dernières observations ont été réalisées sur le mois de XX pour les usuelles et XX pour les complémentaires.
+- en **`r date_derniere_campagne_usuelle`** pour les campagnes usuelles ; 
+- et en **`r date_derniere_campagne_usuelle`** pour les campagnes complémentaires.
 
 # {.tabset .tabset-pills}
 
