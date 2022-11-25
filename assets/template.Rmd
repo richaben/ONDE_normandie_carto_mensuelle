@@ -65,8 +65,6 @@ date_derniere_campagne_usuelle <-
 
 ## Campagnes usuelles {.tabset}
 
-**Dernière mise à jour des données : `r date_derniere_campagne`**.
-
 Les cartes se lisent de la manière suivante :
 
 * La couleur des points correspond à la situation du dernier mois de campagnes (observations usuelles).
