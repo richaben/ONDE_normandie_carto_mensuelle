@@ -44,7 +44,7 @@ jobs:
           git config --local user.name "GitHub Actions"
           git add .
           git commit -m "Results from R script $(date)" || echo "No changes to commit"
-          git push origin || echo "No changes to commit"-
+          git push origin -f || echo "No changes to commit"-
           
       - name: Render rapport
         run: |
