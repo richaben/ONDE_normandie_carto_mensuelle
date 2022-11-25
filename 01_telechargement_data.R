@@ -157,7 +157,14 @@ onde_dernieres_campagnes_comp <-
   slice(which.max(Mois_campagne)) %>% 
   arrange(libelle_type_campagne, libelle_station, Mois_campagne) %>% 
   ungroup() %>% 
-  filter(Mois_campagne == max(Mois_campagne))
+  filter(Mois_campagne == max(Mois_campagne)) %>% 
+  mutate(Couleur = recode(str_wrap(lib_ecoul3mod,12), !!!mes_couleurs_3mod)) %>% 
+  sf::st_as_sf(coords = c("coordonnee_x_station",
+                          "coordonnee_y_station"), 
+               crs = 2154) %>% 
+  sf::st_transform(crs = 4326)  %>% 
+  mutate(label_point = glue::glue('{libelle_station}; {lib_ecoul3mod} (dern. obs.: {date_campagne})'))
+
 
 ## coordonnes stations EPSG 2154 RGF93
 stations_onde_geo <- 
@@ -193,11 +200,11 @@ stations_onde_geo_usuelles <-
   dplyr::mutate(label = paste0(libelle_station,' (',code_station,')'))
 
 
-stations_onde_geo_comp <- 
-  stations_onde_geo %>%
-  dplyr::left_join(onde_dernieres_campagnes_comp) %>%
-  sf::st_transform(crs = 4326) %>% 
-  dplyr::mutate(label = paste0(libelle_station,' (',code_station,')'))
+# stations_onde_geo_comp <- 
+#   stations_onde_geo %>%
+#   dplyr::left_join(onde_dernieres_campagnes_comp) %>%
+#   sf::st_transform(crs = 4326) %>% 
+#   dplyr::mutate(label = paste0(libelle_station,' (',code_station,')'))
 
 
 ## génération des graphs en serie
@@ -283,4 +290,5 @@ save(stations_onde_geo_usuelles,
      graphiques_int_3mod,
      graphiques_int_4mod,
      onde_dernieres_campagnes_usuelles, 
+     onde_dernieres_campagnes_comp,
      file = "data/processed_data/map_data_cartoMod.RData")

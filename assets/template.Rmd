@@ -37,6 +37,8 @@ library(mapview)
 library(leaflet)
 library(leaflet.extras)
 
+`%ni%` <- Negate(`%in%`)
+
 load(file = "../data/processed_data/map_data_cartoMod.RData")
 
 propluvia <- 
@@ -48,21 +50,25 @@ load(file = "../data/raw_data/departement_shape.RData")
 stations_onde_geo_map1 <-
   stations_onde_geo_usuelles %>% 
   left_join(onde_dernieres_campagnes_usuelles %>% select(code_station, Couleur, date_campagne)) %>% 
-  mutate(label_point = paste0(libelle_station,'<br />','dernière obs.:',date_campagne))
+  mutate(label_point = paste0(libelle_station,'; dern. obs.:',date_campagne))
 
 date_derniere_campagne_usuelle <- 
   unique(onde_dernieres_campagnes_usuelles$Mois_campagne) %>% 
-  format("%B %Y") 
+  format("%m/%Y") 
+
+date_derniere_campagne_comp <- 
+  unique(onde_dernieres_campagnes_comp$Mois_campagne) %>% 
+  format("%m/%Y") 
 ```
 
 ## Préambule
 
-⚠️ Cette page est générée automatiquement, et son contenu a été mis à jour pour la dernière fois le **`r format(Sys.time(), '%d %B %Y à %H:%M')`**.
+⚠️ Cette page est générée automatiquement, et son contenu a été mis à jour pour la dernière fois le **`r format(Sys.time(), '%d/%m/%Y à %H:%M')`**.
 
-⚠️ Les données présentées ici concernent les observations réalisées :
+⚠️ Les données ci-dessous concernent les observations réalisées :
 
 - en **`r date_derniere_campagne_usuelle`** pour les campagnes usuelles ; 
-- et en **`r date_derniere_campagne_usuelle`** pour les campagnes complémentaires.
+- et en **`r date_derniere_campagne_comp`** pour les campagnes complémentaires.
 
 # {.tabset .tabset-pills}
 
@@ -176,6 +182,57 @@ map_situation2
 ## Campagnes complémentaires {.tabset}
 
 Ici une carto avec la valeur des dernières observations complémentaires
+
+```{r cartoDynamique comp, fig.height = 7, fig.width = 11, align = "center", warning = FALSE}
+map_situation_comp <- 
+depts %>%
+  filter(code_insee %in% unique(stations_onde_geo_map1$code_departement)) %>%
+  mapview::mapview(zcol = "code_insee", alpha.regions = 0.25,legend = FALSE, 
+                   layer.name = "Departements",homebutton = FALSE,stroke = TRUE,color="black") +
+  mapview(propluvia, zcol = "libel",
+          alpha.regions = 0.10,
+          legend = FALSE, col.regions = 'black',
+          layer.name = "Zones alerte",homebutton = FALSE,stroke = TRUE,color="black") +
+  mapview(stations_onde_geo_map1 %>% 
+            filter(libelle_station %ni% data_campagnes_comp$libelle_station), 
+          cex = 2,
+          col.regions = 'grey50',
+          layer.name = "Stations ONDE",
+          legend = FALSE,
+          alpha.regions = 0.9,
+          zcol = NULL,
+          homebutton = F, popup = NULL) +
+  mapview(data_campagnes_comp,
+          cex = 7,
+          legend = FALSE,
+          zcol = "label_point",
+          layer.name = "Complementaires",
+          col.regions = data_campagnes_comp$Couleur)
+
+map_situation_comp@map <-
+  map_situation_comp@map %>% 
+  addTiles(group = "OSM") %>%
+  #addProviderTiles(providers$CartoDB.PositronOnlyLabels, group = "Villes") %>% 
+  addTiles("http://wxs.ign.fr/choisirgeoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
+           options = c(WMSTileOptions(tileSize = 256),
+                       providerTileOptions(minZoom = 1, maxZoom = 15)),
+           attribution='<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+           group = "Plan IGN"
+  ) %>%
+  addTiles("http://wxs.ign.fr/choisirgeoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
+           options = c(WMSTileOptions(tileSize = 256),
+                       providerTileOptions(minZoom = 1, maxZoom = 22)),
+           attribution='<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+           group = "Photo aérienne"
+  ) %>%
+  addLayersControl(baseGroups    = c("OSM","Plan IGN","Photo aérienne"),
+                   overlayGroups = c("Complementaires","Departements",'Zones alerte'),
+                   options       = layersControlOptions(collapsed = FALSE)) %>% 
+  hideGroup("Zones alerte")
+
+map_situation_comp
+```
+
 
 ## Bilan {.tabset}
 
