@@ -31,10 +31,10 @@ jobs:
         
       - name: Install dependencies
         run: |
-          install.packages(c("hubeau", "leaflet", "leaflet.extras","ggiraph"))
+          install.packages(c("hubeau", "leaflet", "leaflet.extras","ggrepel", "scales", "data.table"))
         shell: Rscript {0}
         
-      - name: Execute Scripts part 1
+      - name: Execute Scripts Telechargement et Mise en forme
         run: |
           Rscript "01_telechargement_data.R"
           
