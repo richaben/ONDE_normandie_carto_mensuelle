@@ -48,7 +48,6 @@ jobs:
           
       - name: Render rapport
         run: |
-          Rscript "Sys.setlocale('LC_TIME', "French_France")"
           Rscript "02_generer_rapport_html.R"
           
       - name: Deploy Pages 
