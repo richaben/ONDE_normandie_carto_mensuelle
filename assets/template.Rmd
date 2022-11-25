@@ -1,7 +1,7 @@
 ---
 title: "Carte interactive des données mensuelles ONDE - Normandie"
 author: "OFB DR Normandie - Service régional Connaissance"
-date: "MAJ: `r format(Sys.time(), '%d %B %Y - %H:%M')`"
+date: "MAJ: `r format(Sys.time(), '%d/%m/%Y - %H:%M')`"
 output: 
   html_document :
     highlight: pygments #default, tango, pygments, kate, monochrome, espresso, zenburn, haddock, and textmate 
@@ -34,6 +34,9 @@ library(sf)
 library(mapview)
 library(leaflet)
 library(leaflet.extras)
+
+Sys.setlocale('LC_TIME', "French_France")
+
 load(file = "../data/processed_data/map_data_cartoMod.RData")
 
 propluvia <- 
