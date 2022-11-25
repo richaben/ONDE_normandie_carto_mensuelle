@@ -1,13 +1,13 @@
 on:
   schedule:
-    - cron:  "*/60 * * * *"
+    - cron:  "0 6 * * *"
   workflow_dispatch:
 
 name: Script_R_ONDE_Normandie
 
 jobs:
   run-r-script:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
