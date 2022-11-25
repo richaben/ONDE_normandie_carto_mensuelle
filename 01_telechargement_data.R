@@ -349,7 +349,7 @@ heatmap_df <-
   # label pourcentage
   dplyr::mutate(Label = ifelse(is.na(n_assecs),"",glue::glue("{n_assecs}/{n_donnees}"))) %>% 
   # label (nb stations / nb total)
-  dplyr::mutate(Label_p = ifelse(is.na(n_assecs),"",glue::glue("{round(pourcentage_assecs,0)}%")))
+  dplyr::mutate(Label_p = ifelse(is.na(n_assecs),"",glue::glue("{round(pourcentage_assecs,1)}%")))
 
 duree_assecs_df <-
   onde_periode %>% 
@@ -383,15 +383,4 @@ save(stations_onde_geo_usuelles,
      df_categ_obs_4mod,
      heatmap_df,
      duree_assecs_df,
-     file = "data/processed_data/map_data_cartoMod.RData")
-                       
-save(stations_onde_geo_usuelles, 
-     graphiques_int_3mod,
-     graphiques_int_4mod,
-     onde_dernieres_campagnes_usuelles, 
-     onde_dernieres_campagnes_comp,
-     df_categ_obs_3mod,
-     df_categ_obs_4mod,
-     heatmap_df,
-     duree_assecs_df,
-     file = "data/map_data_cartoMod.RData")                       
+     file = "data/processed_data/map_data_cartoMod.RData")                     
