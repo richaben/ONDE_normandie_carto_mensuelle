@@ -31,11 +31,10 @@ htmltools::img(src = knitr::image_uri('logo_OFB_v2.png'),
 library(tidyverse)
 library(ondetools)
 library(sf)
-library(ggiraph)
 library(mapview)
 library(leaflet)
 library(leaflet.extras)
-load(file = "../data/processed_data/map_data3mod.RData")
+load(file = "../data/processed_data/map_data_cartoMod.RData")
 
 propluvia <- 
   sf::st_read("../data/raw_data/zonesAlerte_normandie.gpkg", crs = 2154) %>% 
@@ -45,7 +44,7 @@ load(file = "../data/raw_data/departement_shape.RData")
 
 stations_onde_geo_map1 <-
   stations_onde_geo_usuelles %>% 
-  left_join(onde_dernieres_campagnes_usuelles %>% select(code_station,Couleur))
+  left_join(onde_dernieres_campagnes_usuelles %>% select(code_station, Couleur))
 ```
 
 ## Préambule
@@ -121,6 +120,49 @@ map_situation1
 ```
 
 ### Carte - 4 modalités
+
+```{r cartoDynamique, fig.height = 7, fig.width = 11, align = "center", warning = FALSE}
+map_situation2 <- 
+  depts %>%
+  filter(code_insee %in% unique(stations_onde_geo_map1$code_departement)) %>%
+  mapview::mapview(zcol = "code_insee", alpha.regions = 0.25,legend = FALSE, 
+                   layer.name = "Departements",homebutton = FALSE,stroke = TRUE,color="black") +
+  mapview(propluvia, zcol = "libel",
+          alpha.regions = 0.10,
+          legend = FALSE, col.regions = 'black',
+          layer.name = "Zones alerte",homebutton = FALSE,stroke = TRUE,color="black") +
+  mapview(stations_onde_geo_map1, cex = "pourcentage_assecs",
+          layer.name = "Assecs",
+          legend = FALSE,
+          alpha.regions = 0.9,
+          zcol = "libelle_station",
+          popup = leafpop::popupGraph(graphiques_int_4mod, width = 400, height = 350),
+          col.regions = stations_onde_geo_map1$Couleur, homebutton = T)
+
+
+map_situation2@map <-
+  map_situation2@map %>% 
+  addTiles(group = "OSM") %>%
+  #addProviderTiles(providers$CartoDB.PositronOnlyLabels, group = "Villes") %>% 
+  addTiles("http://wxs.ign.fr/choisirgeoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
+           options = c(WMSTileOptions(tileSize = 256),
+                       providerTileOptions(minZoom = 1, maxZoom = 15)),
+           attribution='<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+           group = "Plan IGN"
+  ) %>%
+  addTiles("http://wxs.ign.fr/choisirgeoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
+           options = c(WMSTileOptions(tileSize = 256),
+                       providerTileOptions(minZoom = 1, maxZoom = 22)),
+           attribution='<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+           group = "Photo aérienne"
+  ) %>%
+  addLayersControl(baseGroups    = c("OSM","Plan IGN","Photo aérienne"),
+                   overlayGroups = c("Assecs","Departements",'Zones alerte'),
+                   options       = layersControlOptions(collapsed = FALSE)) %>% 
+  hideGroup("Zones alerte")
+
+map_situation2
+```
 
 ## Campagnes complémentaires {.tabset}
 
