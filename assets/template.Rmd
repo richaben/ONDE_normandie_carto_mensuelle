@@ -243,6 +243,7 @@ Ici qq graphs avec de bilans
 ```{r}
 #####-----------
 ### plot 3 modalites
+plot_obs3mod <-
 ggplot(df_categ_obs_3mod) +
   aes(y = frq, x = forcats::fct_rev(factor(Mois)), fill= forcats::fct_rev(lib_ecoul3mod), label=Label_p) +
   geom_bar(position="stack", stat="identity", alpha= 0.7, colour = 'black', width = 0.7, linewidth  = 0.01)+
@@ -279,6 +280,7 @@ ggplot(df_categ_obs_3mod) +
   guides(fill = guide_legend(nrow = 1, byrow = TRUE))
 
 ### plot 4 modalites
+plot_obs4mod <-
 ggplot(df_categ_obs_4mod) +
   aes(y = frq, x = forcats::fct_rev(factor(Mois)), fill= forcats::fct_rev(lib_ecoul4mod), label=Label_p) +
   geom_bar(position="stack", stat="identity", alpha= 0.7, colour = 'black', width = 0.7, linewidth  = 0.01)+
@@ -314,6 +316,53 @@ ggplot(df_categ_obs_4mod) +
 
   ) +
   guides(fill = guide_legend(nrow = 1, byrow = TRUE))
+
+###
+plot_heatmap <-
+heatmap_df %>% 
+  ggplot() + 
+  aes(x = Annee, y = Mois, fill=pourcentage_assecs) + 
+  geom_tile(col='white',size=0.5) +
+  scale_fill_gradientn("% d\'assecs",
+                       colors = adjustcolor(hcl.colors(10, "RdYlBu",rev = T),alpha.f = 0.8),
+                       limits=c(0,100),na.value = adjustcolor("grey90",alpha.f = 0.7)) +
+  geom_text(aes(label=Label_p),size=3.5,color="black",fontface='bold.italic') +
+  #geom_text(aes(label = Label),size=3,color="black",fontface='italic') +
+  scale_size(guide='none') +
+  scale_x_continuous(breaks = scales::breaks_width(1),expand = c(0,0)) +
+  ylab("Mois") + xlab("Ann\u00e9es") +
+  ggtitle(glue::glue("Proportion mensuelle des stations en assec \u00e0 l\'\u00e9chelle de la r\u00e9gion en {max(heatmap_df$Annee)}")) +
+  # annotate("rect", xmin = 2022-0.5, xmax = 2022+0.49, ymin = 0.5, ymax = 5.5,
+  #          alpha = 0, color= "black",linetype = 2, size=1.2) +
+  theme_bw() +
+  theme(title = element_text(size = 11,face = 'bold'), 
+        axis.text.x = element_text(size=11,angle = 45,hjust = 1),
+        axis.text.y = element_text(size=11),
+        legend.position = 'right',
+        axis.ticks = element_blank(),
+        panel.grid=element_blank())
+
+plot_duree_assecs <-
+  duree_assecs_df %>%
+  filter(label != '0 mois') %>% 
+  ggplot() + aes(x = as.factor(Annee), y = pct, fill = max_nb_mois_assec) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(y = pct, label = nb_station), 
+            fontface="italic",size=3.5,
+            position = position_stack(vjust = 0.5),
+            show.legend = FALSE) +
+  scale_fill_brewer("Dur\u00e9e d\'assecs", 
+                    palette = "YlOrRd",
+                    direction = -1, 
+                    labels=sort(unique(duree_assecs_df$label),decreasing = T)) +
+  scale_y_continuous(labels = scales::percent_format(1)) +
+  ylab(NULL) +
+  xlab("Ann\u00e9es") +
+  ggtitle("Proportions et nombre de stations selon les dur\u00e9es d\'assecs observ\u00e9s \u00e0 l\'\u00e9chelle de la r\u00e9gion") +
+  theme_bw() +
+  theme(title = element_text(size = 11,face = 'bold'), 
+        axis.text.x = element_text(size = 11, angle = 45,hjust = 1),
+        axis.text.y = element_text(size=11))
 ```
 
 

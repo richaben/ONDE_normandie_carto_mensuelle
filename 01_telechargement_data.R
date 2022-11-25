@@ -329,6 +329,46 @@ df_categ_obs_4mod <-
   dplyr::mutate(Label_p = ifelse(is.na(frq),"",glue::glue("{round(frq,0)}%"))) 
 
 
+heatmap_df <-
+  onde_periode %>% 
+  filter(libelle_type_campagne == 'usuelle') %>% 
+  dplyr::select(code_station, libelle_station, Annee, Mois, lib_ecoul3mod) %>% 
+  dplyr::filter(Mois %in% c("05","06", "07", "08", "09")) %>%
+  dplyr::group_by(Mois,Annee) %>%
+  dplyr::summarise(n_donnees = n(), 
+                   n_assecs = length(lib_ecoul3mod[lib_ecoul3mod == 'Assec'])) %>% 
+  dplyr::ungroup() %>% 
+  dplyr::mutate(pourcentage_assecs = round(n_assecs / n_donnees * 100, digits = 2),
+                taille_point = sqrt(pourcentage_assecs+1)) %>% 
+  dplyr::arrange(Annee,Mois) %>% 
+  tidyr::complete(Annee,Mois) %>% 
+  dplyr::mutate(Mois = factor(Mois)) %>%
+  # label pourcentage
+  dplyr::mutate(Label = ifelse(is.na(n_assecs),"",glue::glue("{n_assecs}/{n_donnees}"))) %>% 
+  # label (nb stations / nb total)
+  dplyr::mutate(Label_p = ifelse(is.na(n_assecs),"",glue::glue("{round(pourcentage_assecs,0)}%")))
+
+duree_assecs_df <-
+  onde_periode %>% 
+  filter(libelle_type_campagne == 'usuelle') %>% 
+  dplyr::select(code_station, libelle_station, Annee, Mois, lib_ecoul3mod, date_campagne) %>% 
+  dplyr::filter(Mois %in% c("05","06", "07", "08", "09")) %>% 
+  mutate(mois_num = lubridate::month(date_campagne)) %>% 
+  as_tibble() %>%
+  arrange(code_station, date_campagne) %>% 
+  group_by(code_station,Annee, ID = data.table::rleid(code_station,lib_ecoul3mod == 'Assec' )) %>%
+  mutate(mois_assec_consec = ifelse(lib_ecoul3mod == 'Assec', row_number(), 0L)) %>% 
+  group_by(Annee,code_station) %>% 
+  summarise(max_nb_mois_assec  = max(mois_assec_consec),.groups = "drop") %>% 
+  mutate(max_nb_mois_assec = factor(max_nb_mois_assec,ordered = T)) %>% 
+  group_by(Annee,max_nb_mois_assec) %>%
+  summarise(nb_station = n()) %>% 
+  mutate(pct=prop.table(nb_station)) %>% 
+  mutate(max_nb_mois_assec = fct_rev(max_nb_mois_assec),
+         label = ifelse(max_nb_mois_assec == '1' | max_nb_mois_assec == '0',
+                        paste0(max_nb_mois_assec, " mois"),
+                        paste0(max_nb_mois_assec, " mois cons\u00e9cutifs")))
+
 #####################################
 # Sauvegarde des objets pour page Rmd
 save(stations_onde_geo_usuelles, 
@@ -338,4 +378,6 @@ save(stations_onde_geo_usuelles,
      onde_dernieres_campagnes_comp,
      df_categ_obs_3mod,
      df_categ_obs_4mod,
+     heatmap_df,
+     duree_assecs_df,
      file = "data/processed_data/map_data_cartoMod.RData")
