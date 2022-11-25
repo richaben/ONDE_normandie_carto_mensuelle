@@ -19,8 +19,11 @@ library(sf)
 library(mapview)
 library(leaflet)
 library(leaflet.extras)
+library(ggrepel)
 library(glue)
 library(forcats)
+library(scales)
+library(data.table)
 
 ### Selection des départements ----
 

@@ -38,6 +38,9 @@ library(leaflet)
 library(leaflet.extras)
 library(forcats)
 library(ggrepel)
+library(glue)
+library(scales)
+library(data.table)
 
 `%ni%` <- Negate(`%in%`)
 
