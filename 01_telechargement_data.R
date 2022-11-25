@@ -16,7 +16,6 @@ library(hubeau)
 library(tidyverse)
 library(purrr)
 library(sf)
-library(ggiraph)
 library(mapview)
 library(leaflet)
 library(leaflet.extras)
@@ -201,17 +200,33 @@ stations_onde_geo_comp <-
   dplyr::mutate(label = paste0(libelle_station,' (',code_station,')'))
 
 
-# génération des graphs en serie
-
+## génération des graphs en serie
+### -> fonction
 produire_graph_pour_une_station <- 
-  function(code_station2, onde_df, couleurs){
+  function(station_vec, onde_df, type_mod = '3mod'){
     
-    prov <- onde_df %>%
-      #filter(libelle_type_campagne == 'usuelle') %>%
-      filter(code_station == code_station2) %>% 
-      mutate(label_p = paste0(libelle_type_campagne,'\n',lib_ecoul3mod,'\n',date_campagne),
-             label_sta = paste0(libelle_station,' (',code_station,')'),
-             label_png = paste0("ONDE_dpt",code_departement,"_",label_sta))
+    if(type_mod == '3mod'){
+      prov <- onde_df %>%
+        #filter(libelle_type_campagne == 'usuelle') %>%
+        filter(code_station == station_vec) %>% 
+        mutate(label_p = paste0(libelle_type_campagne,'\n',lib_ecoul3mod,'\n',date_campagne),
+               label_sta = paste0(libelle_station,' (',code_station,')'),
+               label_png = paste0("ONDE_dpt",code_departement,"_",label_sta)) %>% 
+        rename(modalite = lib_ecoul3mod)
+      
+      couleurs <- mes_couleurs_3mod
+      
+    } else {
+      prov <- onde_df %>%
+        #filter(libelle_type_campagne == 'usuelle') %>%
+        filter(code_station == station_vec) %>% 
+        mutate(label_p = paste0(libelle_type_campagne,'\n',lib_ecoul4mod,'\n',date_campagne),
+               label_sta = paste0(libelle_station,' (',code_station,')'),
+               label_png = paste0("ONDE_dpt",code_departement,"_",label_sta)) %>% 
+        rename(modalite = lib_ecoul4mod)
+      
+      couleurs <- mes_couleurs_4mod
+    }
     
     nom_station <- unique(prov$label_sta)
     nom_station_graph <- unique(prov$label_png)
@@ -222,7 +237,7 @@ produire_graph_pour_une_station <-
           y = Mois %>% as.numeric) +
       geom_point(
         aes(
-          fill = stringr::str_wrap(lib_ecoul3mod, 12),
+          fill = stringr::str_wrap(modalite, 12),
           shape = libelle_type_campagne,
           size = libelle_type_campagne,
         ),col='black') +
@@ -235,63 +250,37 @@ produire_graph_pour_une_station <-
                          labels = min(prov$Annee, na.rm = T):max(prov$Annee, na.rm = T)) +
       labs(x = "", y = "Mois", title = nom_station) +
       theme_bw() +
+      theme(title = element_text(face = 'bold'),
+            axis.text.x = element_text(size=10),
+            axis.text.y = element_text(size=10),
+      ) +
       guides(fill = guide_legend(override.aes=list(shape = 22, size = 5)))
     
     graph1
   }
 
-# produire_graph_pour_une_station_int <- 
-#   function(code_station2, onde_df, couleurs){
-#     
-#     prov <- onde_df %>%
-#       #filter(libelle_type_campagne == 'usuelle') %>%
-#       filter(code_station == code_station2) %>% 
-#       mutate(label_p = paste0(libelle_type_campagne,'\n',lib_ecoul3mod,'\n',date_campagne),
-#              label_sta = paste0(libelle_station,' (',code_station,')'),
-#              label_png = paste0("ONDE_dpt",code_departement,"_",label_sta))
-#     
-#     nom_station <- unique(prov$label_sta)
-#     nom_station_graph <- unique(prov$label_png)
-#     
-#     graph1 <-
-#       ggplot(data = prov) +
-#       aes(x = Annee,
-#           y = Mois %>% as.numeric) +
-#       ggiraph::geom_point_interactive(
-#         aes(tooltip = label_p,
-#             fill = stringr::str_wrap(lib_ecoul3mod, 12),
-#             shape = libelle_type_campagne,
-#             size = libelle_type_campagne,
-#         ),col='black') +
-#       coord_flip() +
-#       scale_fill_manual(values = couleurs, name = 'Modalités') +
-#       scale_shape_manual(values = c(21,22),name = 'Type campagne') +
-#       scale_size_manual(values = c(5,10),name = 'Type campagne') +
-#       scale_y_continuous(breaks = 1:12, labels = 1:12) +
-#       scale_x_continuous(breaks = min(prov$Annee, na.rm = T):max(prov$Annee, na.rm = T),
-#                          labels = min(prov$Annee, na.rm = T):max(prov$Annee, na.rm = T)) +
-#       labs(x = "", y = "Mois", title = nom_station) +
-#       theme_bw() +
-#       guides(fill = guide_legend(override.aes=list(shape = 22, size = 5)))
-#     
-#     
-#     graph1 <- ggiraph::girafe(ggobj = graph1)
-#     graph1 <- ggiraph::girafe_options(graph1, ggiraph::opts_toolbar(pngname = nom_station_graph))
-#     graph1
-#   }
 
-# produire_graph_pour_une_station_int(onde_df = onde_periode,
-#                                     code_station2 = stations_onde_geo_usuelles$code_station[3],
-#                                     couleurs = mes_couleurs_3mod)
-
-
+### -> graphiques 3modalités
 graphiques_int_3mod <- 
   purrr::map(.x = stations_onde_geo_usuelles$code_station, 
     .f = produire_graph_pour_une_station, 
-    onde_df = onde_periode, 
-    couleurs = mes_couleurs_3mod)
+    type_mod = '3mod',
+    onde_df = onde_periode)
 
 names(graphiques_int_3mod) <- stations_onde_geo_usuelles$code_station
 
+### -> graphiques 4modalités
+graphiques_int_4mod <- 
+  purrr::map(.x = stations_onde_geo_usuelles$code_station, 
+             .f = produire_graph_pour_une_station, 
+             type_mod = '4mod',
+             onde_df = onde_periode)
+
+names(graphiques_int_4mod) <- stations_onde_geo_usuelles$code_station
+
 # Sauvegarde des objets pour page Rmd
-save(stations_onde_geo_usuelles, graphiques_int_3mod, onde_dernieres_campagnes_usuelles,file = "data/processed_data/map_data3mod.RData")
+save(stations_onde_geo_usuelles, 
+     graphiques_int_3mod,
+     graphiques_int_4mod,
+     onde_dernieres_campagnes_usuelles, 
+     file = "data/processed_data/map_data_cartoMod.RData")
