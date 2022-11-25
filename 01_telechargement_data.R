@@ -384,3 +384,14 @@ save(stations_onde_geo_usuelles,
      heatmap_df,
      duree_assecs_df,
      file = "data/processed_data/map_data_cartoMod.RData")
+                       
+save(stations_onde_geo_usuelles, 
+     graphiques_int_3mod,
+     graphiques_int_4mod,
+     onde_dernieres_campagnes_usuelles, 
+     onde_dernieres_campagnes_comp,
+     df_categ_obs_3mod,
+     df_categ_obs_4mod,
+     heatmap_df,
+     duree_assecs_df,
+     file = "data/map_data_cartoMod.RData")                       
