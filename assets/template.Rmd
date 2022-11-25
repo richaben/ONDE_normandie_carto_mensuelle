@@ -193,11 +193,11 @@ map_situation_comp <-
 depts %>%
   filter(code_insee %in% unique(stations_onde_geo_map1$code_departement)) %>%
   mapview::mapview(zcol = "code_insee", alpha.regions = 0.25,legend = FALSE, 
-                   layer.name = "Departements",homebutton = FALSE,stroke = TRUE,color="black") +
+                   layer.name = "Departements",homebutton = FALSE,stroke = TRUE,color="black",popup = NULL) +
   mapview(propluvia, zcol = "libel",
           alpha.regions = 0.10,
           legend = FALSE, col.regions = 'black',
-          layer.name = "Zones alerte",homebutton = FALSE,stroke = TRUE,color="black") +
+          layer.name = "Zones alerte",homebutton = FALSE,stroke = TRUE,color="black",popup = NULL) +
   mapview(stations_onde_geo_map1 %>% 
             filter(libelle_station %ni% onde_dernieres_campagnes_comp$libelle_station), 
           cex = 2,
@@ -205,14 +205,14 @@ depts %>%
           layer.name = "Stations ONDE",
           legend = FALSE,
           alpha.regions = 0.9,
-          zcol = NULL,
+          zcol = "libelle_station",
           homebutton = F, popup = NULL) +
   mapview(onde_dernieres_campagnes_comp,
           cex = 7,
           legend = FALSE,
           zcol = "label_point",
           layer.name = "Complementaires",
-          col.regions = onde_dernieres_campagnes_comp$Couleur)
+          col.regions = onde_dernieres_campagnes_comp$Couleur,popup = NULL)
 
 map_situation_comp@map <-
   map_situation_comp@map %>% 
