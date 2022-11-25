@@ -19,6 +19,8 @@ library(sf)
 library(mapview)
 library(leaflet)
 library(leaflet.extras)
+library(glue)
+library(forcats)
 
 ### Selection des départements ----
 
@@ -285,10 +287,55 @@ graphiques_int_4mod <-
 
 names(graphiques_int_4mod) <- stations_onde_geo_usuelles$code_station
 
+#####################################
+# Mise en forme des tableaux pour les graphiques bilan
+
+df_categ_obs_3mod <-
+  onde_periode %>% 
+  filter(libelle_type_campagne == 'usuelle') %>% 
+  filter(Annee == max(Annee)) %>% 
+  filter(Mois %in% c('05','06','07','08','09')) %>% 
+  group_by(Mois, Annee, code_departement, lib_ecoul3mod) %>% 
+  summarise(NB = n()) %>% 
+  mutate(frq = NB / sum(NB) *100) %>% 
+  arrange(Mois, code_departement) %>% 
+  mutate(lib_ecoul3mod = factor(lib_ecoul3mod, levels = c("Ecoulement visible",
+                                                          #"Ecoulement visible faible",
+                                                          "Ecoulement non visible",
+                                                          "Assec"), ordered = T)) %>% 
+  #dplyr::mutate(Mois = lubridate::month(as.numeric(Mois),label=T, abbr = T)) %>% 
+  # label pourcentage
+  dplyr::mutate(Label = ifelse(is.na(NB),"",glue::glue("{NB}"))) %>% 
+  # label (nb stations / nb total)
+  dplyr::mutate(Label_p = ifelse(is.na(frq),"",glue::glue("{round(frq,0)}%"))) 
+
+df_categ_obs_4mod <-
+  onde_periode %>% 
+  filter(libelle_type_campagne == 'usuelle') %>% 
+  filter(Annee == max(Annee)) %>% 
+  filter(Mois %in% c('05','06','07','08','09')) %>% 
+  group_by(Mois, Annee, code_departement, lib_ecoul4mod) %>% 
+  summarise(NB = n()) %>% 
+  mutate(frq = NB / sum(NB) *100) %>% 
+  arrange(Mois, code_departement) %>% 
+  mutate(lib_ecoul4mod = factor(lib_ecoul4mod, levels = c("Ecoulement visible acceptable",
+                                                          "Ecoulement visible faible",
+                                                          "Ecoulement non visible",
+                                                          "Assec"), ordered = T)) %>% 
+  #dplyr::mutate(Mois = lubridate::month(as.numeric(Mois),label=T, abbr = T)) %>% 
+  # label pourcentage
+  dplyr::mutate(Label = ifelse(is.na(NB),"",glue::glue("{NB}"))) %>% 
+  # label (nb stations / nb total)
+  dplyr::mutate(Label_p = ifelse(is.na(frq),"",glue::glue("{round(frq,0)}%"))) 
+
+
+#####################################
 # Sauvegarde des objets pour page Rmd
 save(stations_onde_geo_usuelles, 
      graphiques_int_3mod,
      graphiques_int_4mod,
      onde_dernieres_campagnes_usuelles, 
      onde_dernieres_campagnes_comp,
+     df_categ_obs_3mod,
+     df_categ_obs_4mod,
      file = "data/processed_data/map_data_cartoMod.RData")

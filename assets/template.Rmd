@@ -36,6 +36,8 @@ library(sf)
 library(mapview)
 library(leaflet)
 library(leaflet.extras)
+library(forcats)
+library(ggrepel)
 
 `%ni%` <- Negate(`%in%`)
 
@@ -237,6 +239,83 @@ map_situation_comp
 ## Bilan {.tabset}
 
 Ici qq graphs avec de bilans
+
+```{r}
+#####-----------
+### plot 3 modalites
+ggplot(df_categ_obs_3mod) +
+  aes(y = frq, x = forcats::fct_rev(factor(Mois)), fill= forcats::fct_rev(lib_ecoul3mod), label=Label_p) +
+  geom_bar(position="stack", stat="identity", alpha= 0.7, colour = 'black', width = 0.7, linewidth  = 0.01)+
+  facet_grid(~code_departement) +
+  ggrepel::geom_text_repel(size=3, color="black", fontface='bold.italic', position = position_stack(vjust = 0.5)) +
+  coord_flip() +
+  ylab("Pourcentage (%)") +
+  xlab("Mois") +
+  labs(title = glue::glue("Bilan {max(df_categ_obs_3mod$Annee)} par d\u00e9partements"), 
+       subtitle = "Protocole 3 modalit\u00e9s") +
+  ggplot2::scale_fill_manual(name = "Situation stations",
+                             values = c("Ecoulement visible" = "#4575b4",
+                                        "Ecoulement visible acceptable" = "#4575b4",
+                                        "Ecoulement visible faible" = "#bdd7e7",
+                                        "Assec" = "#d73027",
+                                        "Ecoulement non visible" = "#fe9929",
+                                        "Observation impossible" = "grey50")) +
+  theme_bw() +
+  ggplot2::theme(title = ggplot2::element_text(size = 11, face = "bold"), 
+                 legend.text = ggplot2::element_text(size = 11),
+                 legend.title = ggplot2::element_text(size = 11, face = 'bold'),
+                 axis.text.y = ggplot2::element_text(size = 11, colour = 'black'),
+                 axis.text.x = ggplot2::element_text(size = 11, colour = 'black'),
+                 strip.text.x = element_text(size = 11, color = "black", face = "bold"
+                 ),
+                 strip.background = element_rect(
+                   color="black", fill="grey80", size=1, linetype="solid"
+                 ),
+                 panel.grid.major = ggplot2::element_line(colour = NA),
+                 panel.grid.minor = ggplot2::element_line(colour = NA),
+                 legend.position = "bottom",
+                 plot.background = ggplot2::element_blank(),
+  ) +
+  guides(fill = guide_legend(nrow = 1, byrow = TRUE))
+
+### plot 4 modalites
+ggplot(df_categ_obs_4mod) +
+  aes(y = frq, x = forcats::fct_rev(factor(Mois)), fill= forcats::fct_rev(lib_ecoul4mod), label=Label_p) +
+  geom_bar(position="stack", stat="identity", alpha= 0.7, colour = 'black', width = 0.7, linewidth  = 0.01)+
+  facet_grid(~code_departement) +
+  ggrepel::geom_text_repel(size=3, color="black", fontface='bold.italic', position = position_stack(vjust = 0.5)) +
+  coord_flip() +
+  ylab("Pourcentage (%)") +
+  xlab("Mois") +
+  labs(title = glue::glue("Bilan {max(df_categ_obs_4mod$Annee)} par d\u00e9partements"), 
+       subtitle = "Protocole 4 modalit\u00e9s") +
+  ggplot2::scale_fill_manual(name = "Situation stations",
+                             values = c("Ecoulement visible" = "#4575b4",
+                                        "Ecoulement visible acceptable" = "#4575b4",
+                                        "Ecoulement visible faible" = "#bdd7e7",
+                                        "Assec" = "#d73027",
+                                        "Ecoulement non visible" = "#fe9929",
+                                        "Observation impossible" = "grey50")) +
+  theme_bw() +
+  ggplot2::theme(title = ggplot2::element_text(size = 11, face = "bold"), 
+                 legend.text = ggplot2::element_text(size = 11),
+                 legend.title = ggplot2::element_text(size = 11, face = 'bold'),
+                 axis.text.y = ggplot2::element_text(size = 11, colour = 'black'),
+                 axis.text.x = ggplot2::element_text(size = 11, colour = 'black'),
+                 strip.text.x = element_text(size = 11, color = "black", face = "bold"
+                 ),
+                 strip.background = element_rect(
+                   color="black", fill="grey80", size=1, linetype="solid"
+                 ),
+                 panel.grid.major = ggplot2::element_line(colour = NA),
+                 panel.grid.minor = ggplot2::element_line(colour = NA),
+                 legend.position = "bottom",
+                 plot.background = ggplot2::element_blank(),
+
+  ) +
+  guides(fill = guide_legend(nrow = 1, byrow = TRUE))
+```
+
 
 ## Méthodologie
 
