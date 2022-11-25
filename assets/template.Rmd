@@ -35,8 +35,6 @@ library(mapview)
 library(leaflet)
 library(leaflet.extras)
 
-Sys.setlocale('LC_TIME', "French_France")
-
 load(file = "../data/processed_data/map_data_cartoMod.RData")
 
 propluvia <- 
