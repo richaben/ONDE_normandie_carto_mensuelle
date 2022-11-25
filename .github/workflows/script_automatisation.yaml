@@ -34,15 +34,26 @@ jobs:
           install.packages(c("hubeau", "leaflet", "leaflet.extras","ggiraph"))
         shell: Rscript {0}
         
-      - name: Execute Scripts
+      - name: Execute Scripts part 1
         run: |
           Rscript "01_telechargement_data.R"
-          Rscript "02_generer_rapport_html.R"
           
-      - name: Commit Results and Deploy Pages 
+      - name: Commit Results 
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           git add .
           git commit -m "Results from R script" || echo "No changes to commit"
           git push origin || echo "No changes to commit"-
+          
+      - name: Render rapport
+        run: |
+          Rscript "02_generer_rapport_html.R"
+          
+      - name: Deploy Pages 
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add .
+          git commit -m "Results from R script" || echo "No changes to commit"
+          git push origin || echo "No changes to commit"-    
