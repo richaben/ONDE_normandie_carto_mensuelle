@@ -7,7 +7,7 @@ name: Script_R_ONDE_Normandie
 
 jobs:
   run-r-script:
-    runs-on: macOS-latest
+    runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
