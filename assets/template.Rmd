@@ -326,7 +326,7 @@ plot_obs4mod
 
 <br>
 
-```{r bilan heatmap, fig.height = 5.5, fig.width = 8, align = "center", warning = FALSE}
+```{r bilan heatmap, fig.height = 5, fig.width = 9, align = "center", warning = FALSE}
 ###
 plot_heatmap <-
 heatmap_df %>% 
@@ -341,7 +341,7 @@ heatmap_df %>%
   scale_size(guide='none') +
   scale_x_continuous(breaks = scales::breaks_width(1),expand = c(0,0)) +
   ylab("Mois") + 
-  xlab("Ann\u00e9e") +
+  #xlab("Ann\u00e9e") +
   ggtitle(glue::glue("Proportion mensuelle des stations en assec \u00e0 l\'\u00e9chelle de la r\u00e9gion en {max(heatmap_df$Annee)}")) +
   # annotate("rect", xmin = 2022-0.5, xmax = 2022+0.49, ymin = 0.5, ymax = 5.5,
   #          alpha = 0, color= "black",linetype = 2, size=1.2) +
@@ -358,7 +358,7 @@ plot_heatmap
 
 <br>
 
-```{r bilan duree, fig.height = 6, fig.width = 9, align = "center", warning = FALSE}
+```{r bilan duree, fig.height = 5, fig.width = 9, align = "center", warning = FALSE}
 plot_duree_assecs <-
   duree_assecs_df %>%
   filter(label != '0 mois') %>% 
@@ -374,7 +374,7 @@ plot_duree_assecs <-
                     labels=sort(unique(duree_assecs_df$label),decreasing = T)) +
   scale_y_continuous(labels = scales::percent_format(1)) +
   ylab(NULL) +
-  xlab("Ann\u00e9e") +
+  #xlab("Ann\u00e9e") +
   ggtitle("Proportions et nombre de stations selon les dur\u00e9es d\'assecs observ\u00e9s \u00e0 l\'\u00e9chelle de la r\u00e9gion") +
   theme_bw() +
   theme(title = element_text(size = 11,face = 'bold'), 
@@ -396,6 +396,7 @@ L’Observatoire national des étiages (ONDE) a pour objectif de contribuer à l
 Les données sont produites par les agents de l'Office français de la biodiversité à partir des observations de terrain réalisées sur les stations du réseau ONDE. Les données sont [mises à disposition](https://onde.eaufrance.fr/content/t%C3%A9l%C3%A9charger-les-donn%C3%A9es-des-campagnes-par-ann%C3%A9e) sous forme de fichiers annuels au format Excel. Le fichier de l'année en cours est mis à jour "au fil de l'eau" ; ou disponible sur la plateforme [Hubeau](https://hubeau.eaufrance.fr/) à partir des APIs disponibles (*API écoulement*).
 
 **Les campagnes d'observations**
+
 Deux types de campagnes d'observations sont distinguées :
 
 - Les campagnes d'observations dites *usuelles*, réalisées sur chaque département au niveau national, au pas mensuel sur la période estivale (de mai à septembre) avec des observations systématiques à la date du 25 +/- 2 jours du mois. 

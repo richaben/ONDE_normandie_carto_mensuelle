@@ -349,7 +349,7 @@ heatmap_df <-
   # label pourcentage
   dplyr::mutate(Label = ifelse(is.na(n_assecs),"",glue::glue("{n_assecs}/{n_donnees}"))) %>% 
   # label (nb stations / nb total)
-  dplyr::mutate(Label_p = ifelse(is.na(n_assecs),"",glue::glue("{round(pourcentage_assecs,1)}%")))
+  dplyr::mutate(Label_p = ifelse(is.na(n_assecs),"",glue::glue("{round(pourcentage_assecs,0)}%")))
 
 duree_assecs_df <-
   onde_periode %>% 
