@@ -1,5 +1,5 @@
 ---
-title: "Carte interactive des données mensuelles ONDE - Normandie"
+title: "Cartographie régionale du suivi des étiages (ONDE) - Normandie"
 author: "OFB DR Normandie - Service régional Connaissance"
 date: "MAJ: `r format(Sys.time(), '%d/%m/%Y - %H:%M')`"
 output: 
@@ -243,7 +243,7 @@ map_situation_comp
 
 Une série de plusieurs graphiques permettant de dresser un bilan sur les données ONDE à l'échelle de la région pour l'année en cours.
 
-```{r bilan observation, fig.height = 6, fig.width = 9, align = "center", warning = FALSE}
+```{r bilan observation, fig.height = 5.5, fig.width = 8, align = "center", warning = FALSE}
 #####-----------
 ### plot 3 modalites
 plot_obs3mod <-
@@ -280,7 +280,7 @@ ggplot(df_categ_obs_3mod) +
                  legend.position = "bottom",
                  plot.background = ggplot2::element_blank(),
   ) +
-  guides(fill = guide_legend(nrow = 1, byrow = TRUE))
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE))
 
 ### plot 4 modalites
 plot_obs4mod <-
@@ -318,18 +318,20 @@ ggplot(df_categ_obs_4mod) +
                  plot.background = ggplot2::element_blank(),
 
   ) +
-  guides(fill = guide_legend(nrow = 1, byrow = TRUE))
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE))
 
 plot_obs3mod
 plot_obs4mod
 ```
 
-```{r bilan heatmap, fig.height = 6, fig.width = 9, align = "center", warning = FALSE}
+<br>
+
+```{r bilan heatmap, fig.height = 5.5, fig.width = 8, align = "center", warning = FALSE}
 ###
 plot_heatmap <-
 heatmap_df %>% 
   ggplot() + 
-  aes(x = Annee, y = Mois, fill=pourcentage_assecs) + 
+  aes(x = Annee, y = forcats::fct_rev(factor(Mois)), fill=pourcentage_assecs) + 
   geom_tile(col='white',size=0.5) +
   scale_fill_gradientn("% d\'assecs",
                        colors = adjustcolor(hcl.colors(10, "RdYlBu",rev = T),alpha.f = 0.8),
@@ -338,7 +340,8 @@ heatmap_df %>%
   #geom_text(aes(label = Label),size=3,color="black",fontface='italic') +
   scale_size(guide='none') +
   scale_x_continuous(breaks = scales::breaks_width(1),expand = c(0,0)) +
-  ylab("Mois") + xlab("Ann\u00e9es") +
+  ylab("Mois") + 
+  xlab("Ann\u00e9e") +
   ggtitle(glue::glue("Proportion mensuelle des stations en assec \u00e0 l\'\u00e9chelle de la r\u00e9gion en {max(heatmap_df$Annee)}")) +
   # annotate("rect", xmin = 2022-0.5, xmax = 2022+0.49, ymin = 0.5, ymax = 5.5,
   #          alpha = 0, color= "black",linetype = 2, size=1.2) +
@@ -352,6 +355,8 @@ heatmap_df %>%
 
 plot_heatmap
 ```
+
+<br>
 
 ```{r bilan duree, fig.height = 6, fig.width = 9, align = "center", warning = FALSE}
 plot_duree_assecs <-
@@ -369,7 +374,7 @@ plot_duree_assecs <-
                     labels=sort(unique(duree_assecs_df$label),decreasing = T)) +
   scale_y_continuous(labels = scales::percent_format(1)) +
   ylab(NULL) +
-  xlab("Ann\u00e9es") +
+  xlab("Ann\u00e9e") +
   ggtitle("Proportions et nombre de stations selon les dur\u00e9es d\'assecs observ\u00e9s \u00e0 l\'\u00e9chelle de la r\u00e9gion") +
   theme_bw() +
   theme(title = element_text(size = 11,face = 'bold'), 

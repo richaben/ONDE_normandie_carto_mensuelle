@@ -91,18 +91,18 @@ write_csv(onde_df, paste0('data/onde_data/','onde_',date_jour_heure,'.csv'))
 ###---------------------------------------------#####
 
 # couleurs légendes
-mes_couleurs_3mod <- c("Ecoulement\nvisible" = "#0570b0",
-                       "Ecoulement\nnon visible" = "#feb24c",
-                       "Assec" = "#e31a1c",
+mes_couleurs_3mod <- c("Ecoulement\nvisible" = "#4575b4",
+                       "Ecoulement\nnon visible" = "#fe9929",
+                       "Assec" = "#d73027",
                        "Observation\nimpossible" = "grey50",
                        "NA" = "grey90")
 
 # légende
 mes_couleurs_4mod <- c(#"Ecoulement\nvisible" = "#0570b0",
-  "Ecoulement\nvisible\nacceptable" = "#0570b0",
+  "Ecoulement\nvisible\nacceptable" = "#4575b4",
   "Ecoulement\nvisible\nfaible" = "#bdd7e7",
-  "Ecoulement\nnon visible" = "#feb24c",
-  "Assec" = "#e31a1c",
+  "Ecoulement\nnon visible" = "#fe9929",
+  "Assec" = "#d73027",
   "Observation\nimpossible" = "grey50",
   "NA" = "grey90")
 
