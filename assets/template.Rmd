@@ -373,13 +373,13 @@ plot_duree_assecs <-
                     direction = -1, 
                     labels=sort(unique(duree_assecs_df$label),decreasing = T)) +
   scale_y_continuous(labels = scales::percent_format(1)) +
-  ylab(NULL) +
-  xlab(NULL) +
   ggtitle("Proportions et nombre de stations selon les dur\u00e9es d\'assecs observ\u00e9s \u00e0 l\'\u00e9chelle de la r\u00e9gion") +
   theme_bw() +
   theme(title = element_text(size = 11,face = 'bold'), 
         axis.text.x = element_text(size = 11, angle = 45,hjust = 1),
-        axis.text.y = element_text(size=11))
+        axis.text.y = element_text(size=11)) +
+  ylab(NULL) + 
+  xlab(NULL)
 
 plot_duree_assecs
 ```
