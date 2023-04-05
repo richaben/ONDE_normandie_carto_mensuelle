@@ -45,16 +45,11 @@ library(data.table)
 `%ni%` <- Negate(`%in%`)
 
 load(file = "../data/processed_data/map_data_cartoMod.RData")
-
-propluvia <- 
-  sf::st_read("../data/raw_data/zonesAlerte_normandie.gpkg", crs = 2154) %>% 
-  dplyr::select(-Niveau)
-
 load(file = "../data/raw_data/departement_shape.RData")
 
 stations_onde_geo_map1 <-
   stations_onde_geo_usuelles %>% 
-  left_join(onde_dernieres_campagnes_usuelles %>% select(code_station, Couleur, date_campagne)) %>% 
+  left_join(onde_dernieres_campagnes_usuelles %>% select(code_station, Couleur, date_campagne)) %>%
   mutate(label_point = paste0(libelle_station,'; dern. obs.:',date_campagne))
 
 date_derniere_campagne_usuelle <- 
