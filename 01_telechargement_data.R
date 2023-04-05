@@ -151,7 +151,8 @@ onde_dernieres_campagnes_usuelles <-
   mutate(Mois = format(as.Date(date_campagne),"%m"), 
          Mois_campagne = lubridate::ym(paste0(Annee,Mois,sep="-"))) %>% 
   group_by(libelle_station) %>% 
-  slice(which.max(Mois_campagne)) %>% 
+  #slice(which.max(Mois_campagne)) %>% 
+  slice(which.min(abs(Mois_campagne - Sys.Date()))) %>% 
   arrange(libelle_type_campagne, libelle_station, Mois_campagne) %>% 
   ungroup() %>% 
   mutate(Couleur = recode(str_wrap(lib_ecoul3mod,12), !!!mes_couleurs_3mod))
@@ -162,7 +163,8 @@ onde_dernieres_campagnes_comp <-
   mutate(Mois = format(as.Date(date_campagne),"%m"), 
          Mois_campagne = lubridate::ym(paste0(Annee,Mois,sep="-"))) %>% 
   group_by(libelle_station) %>% 
-  slice(which.max(Mois_campagne)) %>% 
+  #slice(which.max(Mois_campagne)) %>%
+  slice(which.min(abs(Mois_campagne - Sys.Date()))) %>% 
   arrange(libelle_type_campagne, libelle_station, Mois_campagne) %>% 
   ungroup() %>% 
   filter(Mois_campagne == max(Mois_campagne)) %>% 
